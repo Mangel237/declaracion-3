@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Intro</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #000000;
+            overflow: hidden;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        
+        #video-container {
+            position: relative;
+            width: 100%;
+            max-width: 1080px;
+            aspect-ratio: 9 / 16;
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+        
+        #intro-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.7);
+        }
+        
+        #overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+        }
+        
+        #intro-text {
+            color: #FFFFFF;
+            font-size: clamp(18px, 5vw, 28px);
+            font-weight: bold;
+            text-align: center;
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.8), 0 0 15px rgba(0, 0, 0, 0.5);
+            margin-bottom: 20px;
+            padding: 0 20px;
+            opacity: 1;
+            animation: textPulse 2s infinite ease-in-out;
+        }
+        
+        #start-button {
+            pointer-events: auto;
+            padding: 12px 30px;
+            font-size: clamp(16px, 4vw, 22px);
+            font-weight: bold;
+            color: #ffffff;
+            background: linear-gradient(135deg, #2E7D32, #AB47BC);
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+            transition: transform 0.3s, box-shadow 0.3s, background 0.3s;
+            opacity: 1;
+            animation: buttonGlow 3s infinite ease-in-out;
+        }
+        
+        #start-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 15px rgba(171, 71, 188, 0.5);
+            background: linear-gradient(135deg, #AB47BC, #2E7D32);
+        }
+        
+        #start-button:active {
+            transform: scale(0.95);
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        @keyframes textPulse {
+            0%, 100% { transform: scale(1); text-shadow: 0 4px 8px rgba(0, 0, 0, 0.8), 0 0 15px rgba(0, 0, 0, 0.5); }
+            50% { transform: scale(1.05); text-shadow: 0 4px 8px rgba(0, 0, 0, 0.8), 0 0 25px rgba(0, 0, 0, 0.7); }
+        }
+        
+        @keyframes buttonGlow {
+            0%, 100% { box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4); }
+            50% { box-shadow: 0 6px 20px rgba(171, 71, 188, 0.7); }
+        }
+        
+        #background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('video/1.mp4') center/cover no-repeat;
+            filter: blur(10px);
+            z-index: -1;
+            opacity: 0.3;
+        }
+        
+        @media (max-width: 600px) {
+            #video-container {
+                border-radius: 0;
+            }
+            #intro-text {
+                font-size: clamp(16px, 6vw, 24px);
+                margin-bottom: 15px;
+            }
+            #start-button {
+                padding: 10px 25px;
+                font-size: clamp(14px, 5vw, 20px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="background"></div>
+    <div id="video-container">
+        <video id="intro-video" autoplay muted loop playsinline>
+            <source src="video/1.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        <div id="overlay">
+            <div id="intro-text">Si esto estallara mañana, entonces solo quiero decirte que...</div>
+            <button id="start-button">Escuchar mensaje</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const startButton = document.getElementById('start-button');
+            const videoContainer = document.getElementById('video-container');
+
+            if (startButton && videoContainer) {
+                startButton.addEventListener('click', () => {
+                    videoContainer.classList.add('hidden');
+                    setTimeout(() => {
+                        window.location.href = 'menu.html';
+                    }, 100);
+                });
+            } else {
+                console.error('No se encontraron los elementos del botón o del contenedor de video');
+            }
+        });
+    </script>
+</body>
+</html>

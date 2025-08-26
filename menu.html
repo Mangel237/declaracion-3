@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Universo de Palabras</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="loader">
+        <div class="spinner"></div>
+    </div>
+    <div id="container">
+        <h1 id="title">Mis últimas palabras serían</h1>
+    </div>
+    <div id="buttons">
+        <button id="yesButton">Sí</button>
+        <button id="noButton">No</button>
+    </div>
+    <div id="progress-bar">
+        <div id="progress"></div>
+    </div>
+    <video id="background-audio" autoplay loop muted playsinline>
+        <source src="video/2.mp4" type="video/mp4">
+        Tu navegador no soporta el elemento de video.
+    </video>
+
+    <script>
+        const images = [
+            'img/1.jpeg',
+            'img/2.webp',
+            'img/3.jpg',
+            'img/4.jpg',
+            'img/5.jpg',
+            'img/6.webp'
+        ];
+        const texts = [
+            "Este mundo... ya está llegando a su fin.",
+            "Las tensiones crecen. Los líderes amenazan. Y todos temen lo peor...",
+            "Quizás mañana ya no quede nada.",
+            "Pero si todo colapsa... hay algo que aún quiero hacer.",
+            "Quiero crear un mundo nuevo... contigo.",
+            "Donde no existan guerras. Solo tú y yo. ¿Te quedarías a mi lado… hasta el último día?"
+        ];
+
+        const container = document.getElementById('container');
+        const title = document.getElementById('title');
+        const buttons = document.getElementById('buttons');
+        const loader = document.getElementById('loader');
+        const progress = document.getElementById('progress');
+        const video = document.getElementById('background-audio');
+
+        // Depuración del video
+        video.addEventListener('loadeddata', () => {
+            console.log('Video cargado correctamente: video/2.mp4');
+        });
+        video.addEventListener('error', (e) => {
+            console.error('Error al cargar el video:', e.target.error.message);
+        });
+        video.addEventListener('play', () => {
+            console.log('Video reproduciéndose (audio activo)');
+        });
+        video.addEventListener('canplay', () => {
+            console.log('Video listo para reproducirse');
+        });
+
+        // Intentar reproducir el video al cargar la página
+        document.addEventListener('DOMContentLoaded', () => {
+            video.play().then(() => {
+                console.log('Reproducción automática iniciada (silenciada)');
+                // Desmutear tras la primera interacción del usuario
+                document.addEventListener('click', () => {
+                    video.muted = false;
+                    console.log('Audio desmuteado tras clic');
+                }, { once: true });
+            }).catch((error) => {
+                console.error('Error en reproducción automática:', error.message);
+                // Mostrar botón para iniciar manualmente
+                const startButton = document.createElement('div');
+                startButton.id = 'start-button';
+                startButton.style.position = 'fixed';
+                startButton.style.top = '50%';
+                startButton.style.left = '50%';
+                startButton.style.transform = 'translate(-50%, -50%)';
+                startButton.style.zIndex = '1000';
+                startButton.innerHTML = '<button onclick="startAudio()">Iniciar experiencia</button>';
+                document.body.appendChild(startButton);
+            });
+
+            // Animaciones existentes
+            setTimeout(() => {
+                loader.classList.add('hidden');
+            }, 1000);
+            title.style.top = '0';
+            title.style.opacity = '1';
+            const imageContainers = document.querySelectorAll('.image-container');
+            imageContainers.forEach((container, index) => {
+                const img = container.querySelector('.image');
+                setTimeout(() => {
+                    img.style.top = '0';
+                    img.style.opacity = '1';
+                    img.classList.add('animated');
+                }, (index + 1) * 400);
+            });
+        });
+
+        // Función para iniciar el audio manualmente
+        function startAudio() {
+            video.muted = false;
+            video.play().then(() => {
+                console.log('Audio iniciado manualmente');
+                document.getElementById('start-button').remove();
+            }).catch((error) => {
+                console.error('Error al iniciar audio manualmente:', error.message);
+            });
+        }
+
+        // Crear contenedores de imágenes
+        images.forEach((src, index) => {
+            const imageContainer = document.createElement('div');
+            imageContainer.classList.add('image-container');
+
+            const img = document.createElement('img');
+            img.src = src;
+            img.classList.add('image');
+            img.alt = `Imagen ${index + 1}`;
+            img.style.top = `-${(index + 2) * 100}vh`;
+
+            const guideDiv = document.createElement('div');
+            guideDiv.classList.add('guide-overlay');
+            guideDiv.textContent = 'Abrir';
+
+            const textDiv = document.createElement('div');
+            textDiv.classList.add('text-overlay');
+            textDiv.textContent = texts[index];
+
+            imageContainer.appendChild(img);
+            imageContainer.appendChild(guideDiv);
+            imageContainer.appendChild(textDiv);
+            container.appendChild(imageContainer);
+
+            imageContainer.addEventListener('click', () => {
+                imageContainer.classList.add('active');
+                updateProgress((index + 1) / images.length);
+                if (index === images.length - 1) {
+                    imageContainer.classList.add('centered');
+                    document.querySelectorAll('.image-container:not(:last-child)').forEach(el => {
+                        el.style.display = 'none';
+                    });
+                    title.style.display = 'none';
+                    buttons.style.display = 'flex';
+                    buttons.classList.add('active');
+                }
+            });
+        });
+
+        function updateProgress(percentage) {
+            progress.style.width = `${percentage * 100}%`;
+        }
+
+        document.getElementById('yesButton').addEventListener('click', () => {
+            alert('¡Gracias por quedarte a mi lado!');
+        });
+        document.getElementById('noButton').addEventListener('click', () => {
+            alert('Entiendo... pero siempre estaré aquí.');
+        });
+    </script>
+</body>
+</html>
